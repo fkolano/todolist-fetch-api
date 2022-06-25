@@ -2,14 +2,32 @@ import React, { useState, useEffect } from "react";
 import ReactDOM from "react-dom";
 
 export const Home = () => {
-  const [todoList, setToDoList] = useState(["Do Homework",
-  "Do Laundry",
-  "Walk the Dog"]);
+  const [todoList, setToDoList] = useState([]);
+  const fakeTodo = "https://assets.breatheco.de/apis/fake/todos/user/fkolano";
+  const createApi = () => {
+    fetch(fakeTodo, {
+      method: "POST",
+      body: JSON.stringify(todoList),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => response.json());
+  };
+  const getTodo = () => {
+    fetch(fakeTodo)
+      .then((response) => response.json())
+      .then((data) => setToDoList(data));
+  };
+
+  useEffect(() => {
+    getTodo();
+  }, []);
+
   const newToDoList = todoList.map((item, i) => {
     return (
       <div key={i}>
         <li>
-          {item} <button onClick={() => deleteToDoList(i)}>x</button>
+          {item.label} <button onClick={() => deleteToDoList(i)}>x</button>
         </li>
       </div>
     );
@@ -21,10 +39,15 @@ export const Home = () => {
   const newToDo = (onKeyDownEvent) => {
     if (onKeyDownEvent.keyCode === 13) {
       let click = onKeyDownEvent.target.value;
-      const todo = [...todoList, click];
+      const todo = [
+        ...todoList,
+        {
+          label: click,
+          done: false,
+        },
+      ];
       setToDoList(todo);
       onKeyDownEvent.target.value = "";
-      
     }
   };
 
