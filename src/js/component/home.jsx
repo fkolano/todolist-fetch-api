@@ -23,6 +23,16 @@ export const Home = () => {
     getTodo();
   }, []);
 
+  const updateTodo = () => {
+    fetch(fakeTodo, {
+      method: "PUT",
+      body: JSON.stringify(todoList),
+      headers: {
+        "Content-Type": "application/json",
+      },
+    }).then((response) => response.json());
+  };
+
   const newToDoList = todoList.map((item, i) => {
     return (
       <div key={i}>
@@ -48,6 +58,7 @@ export const Home = () => {
       ];
       setToDoList(todo);
       onKeyDownEvent.target.value = "";
+	  
     }
   };
 
@@ -59,6 +70,7 @@ export const Home = () => {
         onKeyDown={newToDo}
         type="text"
       ></input>
+	  <button type="submit" onClick={updateTodo}>add</button>
       <ul>{newToDoList}</ul>
     </div>
   );
